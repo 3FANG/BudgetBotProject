@@ -4,6 +4,8 @@ import logging
 from aiogram import Dispatcher, Bot
 from asyncpg import Pool
 from asyncpg import create_pool
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from bot.middleware import DBMiddleware, OuterMiddleware
 from bot.config.config import load_config, Config
@@ -19,6 +21,10 @@ async def main():
         )
     logger.warning('Bot initialization...')
     config: Config = load_config()
+
+    engine = create_engine(config.db.url_object)
+
+    Session = sessionmaker(engine)
 
     bot: Bot = Bot(token=(config.tg_bot.token))
     dp: Dispatcher = Dispatcher()

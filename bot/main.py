@@ -2,12 +2,11 @@ import asyncio
 import logging
 
 from aiogram import Dispatcher, Bot
-from asyncpg import Pool
-from asyncpg import create_pool
+from aiogram.utils.callback_answer import CallbackAnswerMiddleware
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from bot.middleware import DBMiddleware, OuterMiddleware
+from bot.middleware import DbSessionMiddleware
 from bot.config.config import load_config, Config
 from bot.handlers import user, admin, other
 
@@ -20,6 +19,7 @@ async def main():
                u'[%(asctime)s] - %(name)s - %(message)s',
         )
     logger.warning('Bot initialization...')
+
     config: Config = load_config()
 
     engine = create_engine(config.db.url_object)
@@ -29,23 +29,13 @@ async def main():
     bot: Bot = Bot(token=(config.tg_bot.token))
     dp: Dispatcher = Dispatcher()
 
-    pool: Pool = await create_pool(
-        user=config.db.user,
-        password=config.db.password,
-        database=config.db.database,
-        host=config.db.host,
-        port=config.db.port
-    )
+    dp.update.middleware(DbSessionMiddleware(session_pool=Session))
+    # Automatically reply to all callbacks
+    dp.callback_query.middleware(CallbackAnswerMiddleware())
 
     dp.include_router(admin.router)
     dp.include_router(user.router)
     dp.include_router(other.router)
-
-    # dp.message.outer_middleware(OuterMiddleware())
-    # dp.callback_query.outer_middleware(OuterMiddleware())
-
-    # dp.message.middleware(DBMiddleware(pool))
-    # dp.callback_query.middleware(DBMiddleware(pool))
 
     logger.warning('Bot started...')
 

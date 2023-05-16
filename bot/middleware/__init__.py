@@ -1,1 +1,1 @@
-from .main import DBMiddleware, OuterMiddleware
+from .main import DbSessionMiddleware

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 import datetime
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -25,6 +25,8 @@ class Category(Base):
     is_base_expanse: Mapped[bool]
     aliases: Mapped[str]
 
+    expenses: Mapped[List["Expense"]] = relationship(back_populates="category")
+
     def __repr__(self) -> str:
         return f"Category(codename={self.codename!r}, name={self.name!r}, is_base_expense={self.is_base_expanse!r}, aliases={self.aliases!r})"
 
@@ -37,6 +39,8 @@ class Expense(Base):
     created: Mapped[datetime.datetime]
     category_codename = mapped_column(ForeignKey("Category.codename"))
     raw_text: Mapped[str]
+
+    category: Mapped["Category"] = relationship(back_populates="expense")
 
     def __repr__(self) -> str:
         return f"Expense(id={self.id!r}, amount={self.amount!r}, created={self.created!r}, category_codename={self.category_codename!r}, raw_text={self.raw_text!r})"

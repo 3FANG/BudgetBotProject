@@ -1,6 +1,10 @@
 from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
+# from sqlalchemy.orm import Session
+
+
+# session: Session
 
 
 router = Router()

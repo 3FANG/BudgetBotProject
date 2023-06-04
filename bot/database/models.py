@@ -40,7 +40,7 @@ class Expense(Base):
     category_codename = mapped_column(ForeignKey("Category.codename"))
     raw_text: Mapped[str]
 
-    category: Mapped["Category"] = relationship(back_populates="expense")
+    category: Mapped["Category"] = relationship(back_populates="expenses")
 
     def __repr__(self) -> str:
         return f"Expense(id={self.id!r}, amount={self.amount!r}, created={self.created!r}, category_codename={self.category_codename!r}, raw_text={self.raw_text!r})"

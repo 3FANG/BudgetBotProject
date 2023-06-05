@@ -16,6 +16,6 @@ class DbSessionMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: Dict[str, Any],
     ) -> Any:
-        async with self.session_pool() as session:
+        with self.session_pool() as session:
             data["session"] = session
             return await handler(event, data)

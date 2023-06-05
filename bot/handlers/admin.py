@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.types import Message
 
 from bot.filters import AdminFilter
-from bot.config import load_config
+from bot.config.config import load_config
 
 
 CFG = load_config()

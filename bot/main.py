@@ -22,7 +22,7 @@ async def main():
 
     config: Config = load_config()
 
-    engine = create_engine(config.db.url_object)
+    engine = create_engine(config.db.url_object, echo=True)
 
     Session = sessionmaker(engine)
 
@@ -45,5 +45,5 @@ async def main():
 def start_bot():
     try:
         asyncio.run(main())
-    except Exception as ex:
-        logger.error(ex)
+    except KeyboardInterrupt as ex:
+        logger.error("Bot stoped!")

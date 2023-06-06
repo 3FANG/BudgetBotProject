@@ -7,11 +7,6 @@ from sqlalchemy import URL
 @dataclass
 class DBConfig:
     url_object: URL
-    # host: str
-    # password: str
-    # user: str
-    # database: str
-    # port: str
 
 
 @dataclass
@@ -46,11 +41,6 @@ def load_config():
                 password=env('PASSWORD'),
                 host=env('HOST'),
                 port=env('PORT')
-                ),
-            # host=env('HOST'),
-            # password=env('PASSWORD'),
-            # user=env('USER'),
-            # database=env('DATABASE'),
-            # port=env('PORT')
+                )
         )
     )

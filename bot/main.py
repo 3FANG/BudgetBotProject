@@ -3,8 +3,7 @@ import logging
 
 from aiogram import Dispatcher, Bot
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.middleware import DbSessionMiddleware
 from bot.config.config import load_config, Config
@@ -22,14 +21,15 @@ async def main():
 
     config: Config = load_config()
 
-    engine = create_engine(config.db.url_object, echo=True)
+    engine = create_async_engine(url=config.db.url_object, echo=True)
+    sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
 
-    Session = sessionmaker(engine)
+    print(str(config.db.url_object))
 
     bot: Bot = Bot(token=(config.tg_bot.token))
     dp: Dispatcher = Dispatcher()
 
-    dp.update.middleware(DbSessionMiddleware(session_pool=Session))
+    dp.update.middleware(DbSessionMiddleware(session_pool=sessionmaker))
     # Automatically reply to all callbacks
     dp.callback_query.middleware(CallbackAnswerMiddleware())
 

@@ -6,7 +6,7 @@ from aiogram.utils.callback_answer import CallbackAnswerMiddleware
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.middleware import DbSessionMiddleware
-from bot.config.config import load_config, Config
+from bot.config.config_reader import config
 from bot.handlers import user, admin, other
 
 logger = logging.getLogger(__name__)
@@ -19,14 +19,10 @@ async def main():
         )
     logger.warning('Bot initialization...')
 
-    config: Config = load_config()
-
-    engine = create_async_engine(url=config.db.url_object, echo=True)
+    engine = create_async_engine(url=config.db_url, echo=True)
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
 
-    print(str(config.db.url_object))
-
-    bot: Bot = Bot(token=(config.tg_bot.token))
+    bot: Bot = Bot(token=(config.bot_token.get_secret_value()))
     dp: Dispatcher = Dispatcher()
 
     dp.update.middleware(DbSessionMiddleware(session_pool=sessionmaker))

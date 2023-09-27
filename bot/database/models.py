@@ -8,7 +8,7 @@ from bot.database.base import Base
 
 
 class Budget(Base):
-    __tablename__ = "User"
+    __tablename__ = "Budget"
 
     codename: Mapped[str] = mapped_column(String(255), primary_key=True)
     daily_limit: Mapped[int]

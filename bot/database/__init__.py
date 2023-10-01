@@ -1,10 +1,10 @@
 from .base import Base
-from .models import Budget, Category, Expense
+from .models import Users, Category, Expense, Aliases
 
 
 __all__ = [
-    Base,
-    Budget,
+    Users,
+    Aliases,
     Category,
     Expense
 ]

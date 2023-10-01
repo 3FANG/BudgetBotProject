@@ -10,11 +10,11 @@ from bot.database.base import Base
 class Users(Base):
     __tablename__ = "Users"
 
-    id: Mapped[BIGINT] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(BIGINT, primary_key=True)
     username: Mapped[str] = mapped_column(String(30))
     fisrt_name: Mapped[str] = mapped_column(String(64))
     last_name: Mapped[str] = mapped_column(String(64))
-    signed: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP(timezone=True))
+    signed: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True))
 
     categories: Mapped[List["Category"]] = relationship(back_populates="user")
 
@@ -27,7 +27,7 @@ class Category(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255))
-    user_id: Mapped[int] = mapped_column(ForeignKey("Users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("Users.id", ondelete="CASCADE"))
 
     user: Mapped["Users"] = relationship(back_populates="categories")
     expenses: Mapped[List["Expense"]] = relationship(back_populates="category")
@@ -42,8 +42,8 @@ class Expense(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     amount: Mapped[int]
-    created: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP(timezone=True))
-    category_id: Mapped[int] = mapped_column(ForeignKey("Category.id"))
+    created: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True))
+    category_id: Mapped[int] = mapped_column(ForeignKey("Category.id", ondelete="CASCADE"))
     raw_text: Mapped[str]
 
     category: Mapped["Category"] = relationship(back_populates="expenses")
@@ -57,7 +57,7 @@ class Aliases(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-    category_id: Mapped[int] = mapped_column(ForeignKey("Category.id"))
+    category_id: Mapped[int] = mapped_column(ForeignKey("Category.id", ondelete="CASCADE"))
 
     category: Mapped["Category"] = relationship(back_populates="aliases")
 

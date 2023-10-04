@@ -11,9 +11,9 @@ class Users(Base):
     __tablename__ = "Users"
 
     id: Mapped[int] = mapped_column(BIGINT, primary_key=True)
-    username: Mapped[str] = mapped_column(String(30))
-    fisrt_name: Mapped[str] = mapped_column(String(64))
-    last_name: Mapped[str] = mapped_column(String(64))
+    username: Mapped[str] = mapped_column(String(30), nullable=True)
+    first_name: Mapped[str] = mapped_column(String(64), nullable=True)
+    last_name: Mapped[str] = mapped_column(String(64), nullable=True)
     signed: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True))
 
     categories: Mapped[List["Category"]] = relationship(back_populates="user")

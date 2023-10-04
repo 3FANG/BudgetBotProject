@@ -17,9 +17,10 @@ async def main():
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s '
                u'[%(asctime)s] - %(name)s - %(message)s',
         )
+    logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
     logger.warning('Bot initialization...')
 
-    engine = create_async_engine(url=config.db_url, echo=True)
+    engine = create_async_engine(url=config.db_url)
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
 
     bot: Bot = Bot(token=(config.bot_token.get_secret_value()))

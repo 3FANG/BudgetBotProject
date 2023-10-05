@@ -18,6 +18,7 @@ async def main():
                u'[%(asctime)s] - %(name)s - %(message)s',
         )
     logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+    logging.getLogger("sqlalchemy.pool").setLevel(logging.INFO)
     logger.warning('Bot initialization...')
 
     engine = create_async_engine(url=config.db_url)

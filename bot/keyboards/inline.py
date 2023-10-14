@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.lexicon import RU_LEXICON
 
 
-def start_keyboard():
+def start_keyboard() -> InlineKeyboardMarkup:
     expenses_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['expenses_button'],
         callback_data='expenses'
@@ -20,7 +20,7 @@ def start_keyboard():
     return keyboard
 
 
-def expenses_keyboard():
+def expenses_keyboard() -> InlineKeyboardMarkup:
     add_category_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['add_category_button'],
         callback_data='add_category'
@@ -53,7 +53,7 @@ def expenses_keyboard():
     return keyboard
 
 
-def statistics_keyboard():
+def statistics_keyboard() -> InlineKeyboardMarkup:
     today_statistics_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['today_statistics_button'],
         callback_data='today_statistics'
@@ -61,7 +61,7 @@ def statistics_keyboard():
 
     current_month_statistics_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['current_month_statistics_botton'],
-        callback_data='current_month'
+        callback_data='current_month_statistics'
     )
 
     select_period_button: InlineKeyboardButton = InlineKeyboardButton(
@@ -84,3 +84,29 @@ def statistics_keyboard():
     )
 
     return keyboard
+
+########################################################################
+'''ПЕРЕДЕЛАТЬ'''
+
+cancel_add_category_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(
+            text=RU_LEXICON['add_category_cancel_button'],
+            callback_data='add_category_cancel'
+        )]]
+)
+
+confirm_category_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(
+            text=RU_LEXICON['add_category_confirm_button'],
+            callback_data='add_category_confirm'
+        ),
+        InlineKeyboardButton(
+            text=RU_LEXICON['add_category_cancel_button'],
+            callback_data='add_category_cancel'
+        )
+    ]]
+)
+
+#########################################################################

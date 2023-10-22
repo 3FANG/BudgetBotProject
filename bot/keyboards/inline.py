@@ -1,4 +1,8 @@
+from collections import namedtuple
+
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+
 from bot.lexicon import RU_LEXICON
 
 
@@ -18,7 +22,6 @@ def start_keyboard() -> InlineKeyboardMarkup:
     )
 
     return keyboard
-
 
 def expenses_keyboard() -> InlineKeyboardMarkup:
     add_category_button: InlineKeyboardButton = InlineKeyboardButton(
@@ -52,7 +55,6 @@ def expenses_keyboard() -> InlineKeyboardMarkup:
 
     return keyboard
 
-
 def statistics_keyboard() -> InlineKeyboardMarkup:
     today_statistics_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['today_statistics_button'],
@@ -85,28 +87,41 @@ def statistics_keyboard() -> InlineKeyboardMarkup:
 
     return keyboard
 
-########################################################################
-'''ПЕРЕДЕЛАТЬ'''
 
-cancel_add_category_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(
-    inline_keyboard=[[
-        InlineKeyboardButton(
-            text=RU_LEXICON['add_category_cancel_button'],
-            callback_data='add_category_cancel'
-        )]]
+cancel_operation_in_expenses_sesction_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(
+    inline_keyboard=[[InlineKeyboardButton(
+        text=RU_LEXICON['cancel_operation_button'],
+        callback_data='cancel_operation_in_expenses_section'
+    )]]
 )
 
-confirm_category_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(
-    inline_keyboard=[[
-        InlineKeyboardButton(
-            text=RU_LEXICON['add_category_confirm_button'],
-            callback_data='add_category_confirm'
-        ),
-        InlineKeyboardButton(
-            text=RU_LEXICON['add_category_cancel_button'],
-            callback_data='add_category_cancel'
+def confirm_category_or_alias_keyboard(category_or_alias: str) -> InlineKeyboardMarkup:
+    confirm_button: InlineKeyboardButton = InlineKeyboardButton(
+        text=RU_LEXICON['confirm_button'],
+        callback_data=f'add_{category_or_alias}_confirm'
+    )
+    cancel_button: InlineKeyboardButton = InlineKeyboardButton(
+        text=RU_LEXICON['cancel_operation_button'],
+        callback_data='cancel_operation_in_expenses_section'
+    )
+    keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(
+        inline_keyboard=[[confirm_button, cancel_button]]
+    )
+    return keyboard
+
+
+def categories_keyboard(categories: list[namedtuple]) -> InlineKeyboardMarkup:
+    builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+    for category in categories:
+        builder.add(
+            InlineKeyboardButton(
+                text=category.category_name,
+                callback_data=f"add_alias_to:{category.category_name}:{category.category_id}"
+            )
         )
-    ]]
-)
-
-#########################################################################
+    builder.adjust(1)
+    builder.row(InlineKeyboardButton(
+        text=RU_LEXICON['cancel_operation_button'],
+        callback_data='cancel_operation_in_expenses_section'
+    ))
+    return builder.as_markup()

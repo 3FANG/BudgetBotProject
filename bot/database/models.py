@@ -2,7 +2,7 @@ from typing import List
 import datetime
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, ForeignKey, BIGINT, TIMESTAMP
+from sqlalchemy import String, ForeignKey, BIGINT, TIMESTAMP, DATE
 
 from bot.database.base import Base
 
@@ -14,7 +14,7 @@ class Users(Base):
     username: Mapped[str] = mapped_column(String(30), nullable=True)
     first_name: Mapped[str] = mapped_column(String(64), nullable=True)
     last_name: Mapped[str] = mapped_column(String(64), nullable=True)
-    signed: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True))
+    signed: Mapped[datetime.date] = mapped_column(DATE)
 
     categories: Mapped[List["Category"]] = relationship(back_populates="user")
 
@@ -42,7 +42,7 @@ class Expense(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     amount: Mapped[int]
-    created: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True))
+    created: Mapped[datetime.date] = mapped_column(DATE)
     category_id: Mapped[int] = mapped_column(ForeignKey("Category.id", ondelete="CASCADE"))
     raw_text: Mapped[str]
 

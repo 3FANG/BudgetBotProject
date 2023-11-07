@@ -23,7 +23,7 @@ def upgrade() -> None:
     sa.Column('username', sa.String(length=30), nullable=True),
     sa.Column('first_name', sa.String(length=64), nullable=True),
     sa.Column('last_name', sa.String(length=64), nullable=True),
-    sa.Column('signed', sa.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('signed', sa.DATE(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('Category',
@@ -43,7 +43,7 @@ def upgrade() -> None:
     op.create_table('Expense',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('amount', sa.Integer(), nullable=False),
-    sa.Column('created', sa.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('created', sa.DATE(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
     sa.Column('raw_text', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['Category.id'], ondelete='CASCADE'),

@@ -1,14 +1,13 @@
 import re
-from typing import NamedTuple, Optional
+from typing import Optional
+from dataclasses import dataclass
 
 
-class ParsedMessage(NamedTuple):
+@dataclass
+class ParsedMessage:
     category_alias: Optional[str]
     amount: int
     comment: Optional[str]
-
-    def __str__(self):
-        return  f"ParsedMessage(category_alias={self.category_alias}, amount={self.amount}, comment={self.comment})"
 
 
 def _parse_message(raw_message: str, inline: bool=False) -> ParsedMessage:

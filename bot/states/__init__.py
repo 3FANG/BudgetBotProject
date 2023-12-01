@@ -9,6 +9,9 @@ class ExpensesStates(StatesGroup):
     add_alias: State = State()
     confirm_adding_alias : State = State()
 
+    add_expense: State = State()
+    confirm_adding_expense: State = State()
+
 
 # class AdminStates(StatesGroup):
 #     pass

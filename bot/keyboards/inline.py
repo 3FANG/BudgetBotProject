@@ -95,10 +95,10 @@ cancel_operation_in_expenses_sesction_keyboard: InlineKeyboardMarkup = InlineKey
     )]]
 )
 
-def confirm_category_or_alias_keyboard(category_or_alias: str) -> InlineKeyboardMarkup:
+def confirm_adding_keyboard(category_or_alias_or_expense: str) -> InlineKeyboardMarkup:
     confirm_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['confirm_button'],
-        callback_data=f'add_{category_or_alias}_confirm'
+        callback_data=f'add_{category_or_alias_or_expense}_confirm'
     )
     cancel_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['cancel_operation_button'],
@@ -110,13 +110,13 @@ def confirm_category_or_alias_keyboard(category_or_alias: str) -> InlineKeyboard
     return keyboard
 
 
-def categories_keyboard(categories: list[namedtuple]) -> InlineKeyboardMarkup:
+def categories_keyboard(expense_or_alias: str, categories: list[namedtuple]) -> InlineKeyboardMarkup:
     builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     for category in categories:
         builder.add(
             InlineKeyboardButton(
                 text=category.category_name,
-                callback_data=f"add_alias_to:{category.category_name}:{category.category_id}"
+                callback_data=f"add_{expense_or_alias}_to:{category.category_name}:{category.category_id}"
             )
         )
     builder.adjust(1)

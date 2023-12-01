@@ -4,5 +4,5 @@ from .inline import (
     statistics_keyboard,
     cancel_operation_in_expenses_sesction_keyboard,
     categories_keyboard,
-    confirm_category_or_alias_keyboard
+    confirm_adding_keyboard
 )

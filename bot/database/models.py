@@ -44,6 +44,7 @@ class Expense(Base):
     amount: Mapped[int]
     created: Mapped[datetime.date] = mapped_column(DATE)
     category_id: Mapped[int] = mapped_column(ForeignKey("Category.id", ondelete="CASCADE"))
+    comment: Mapped[str]
     raw_text: Mapped[str]
 
     category: Mapped["Category"] = relationship(back_populates="expenses")

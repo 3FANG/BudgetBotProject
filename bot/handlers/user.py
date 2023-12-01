@@ -12,16 +12,17 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import select
 
 from bot.lexicon import RU_LEXICON
-from bot.database import Users, Category, Aliases
+from bot.database import Users, Category, Aliases, Expense
 from bot.keyboards import (
     start_keyboard,
     expenses_keyboard,
     statistics_keyboard,
     cancel_operation_in_expenses_sesction_keyboard,
     categories_keyboard,
-    confirm_category_or_alias_keyboard
+    confirm_adding_keyboard
 )
 from bot.states import ExpensesStates
+from bot.services import ParsedMessage, _parse_message
 
 
 router = Router()
@@ -81,7 +82,7 @@ async def confirm_adding_category(message: Message, session: AsyncSession, state
     await state.set_state(ExpensesStates.add_category)
     await message.answer(
         text=RU_LEXICON['confirm_adding_category_message'].format(message.text.title()),
-        reply_markup=confirm_category_or_alias_keyboard('category')
+        reply_markup=confirm_adding_keyboard('category')
     )
 
 
@@ -114,7 +115,7 @@ async def add_category_on_database(callback: CallbackQuery, state: FSMContext, s
 
 
 @router.callback_query(F.data == 'add_alias')
-async def select_category_on_keyboard(callback: CallbackQuery, session: AsyncSession):
+async def select_category_on_keyboard_for_adding_alias(callback: CallbackQuery, session: AsyncSession):
     result = await session.execute(
         select(Category.name, Category.id)
         .where(Category.user_id == callback.from_user.id)
@@ -123,7 +124,9 @@ async def select_category_on_keyboard(callback: CallbackQuery, session: AsyncSes
     category = namedtuple("category", ['category_name', 'category_id'])
     categories = list(map(lambda x: category(x[0], x[1]), result.fetchall()))
 
-    await callback.message.edit_text(text=RU_LEXICON['select_category_message'], reply_markup=categories_keyboard(categories))
+    await callback.message.edit_text(
+        text=RU_LEXICON['select_category_message'],
+        reply_markup=categories_keyboard(expense_or_alias='alias', categories=categories))
 
 
 @router.callback_query(F.data.startswith('add_alias_to'))
@@ -143,16 +146,16 @@ async def confirm_adding_alias(message: Message, state: FSMContext, session: Asy
 
     ''' Add a validation input data '''
 
-    await state.update_data(alias=message.text)
+    await state.update_data(alias=message.text.lower())
     data = await state.get_data()
     await state.set_state(ExpensesStates.confirm_adding_alias)
     await message.answer(
         text=RU_LEXICON['confirm_adding_alias_message'].format(message.text, data['category_name']),
-        reply_markup=confirm_category_or_alias_keyboard('alias')
+        reply_markup=confirm_adding_keyboard('alias')
     )
 
 
-@router.callback_query(StateFilter(ExpensesStates.confirm_adding_alias))
+@router.callback_query(StateFilter(ExpensesStates.confirm_adding_alias), F.data == ('add_alias_confirm'))
 async def add_alias_on_database(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     data = await state.get_data()
     await state.clear()
@@ -180,3 +183,72 @@ async def add_alias_on_database(callback: CallbackQuery, state: FSMContext, sess
     await callback.message.answer(text=RU_LEXICON['expenses_message'], reply_markup=expenses_keyboard())
 
 
+@router.callback_query(F.data == 'add_expense')
+async def select_category_on_keyboard_for_adding_expense(callback: CallbackQuery, session: AsyncSession):
+    result = await session.execute(
+        select(Category.name, Category.id)
+        .where(Category.user_id == callback.from_user.id)
+    )
+
+    category = namedtuple("category", ['category_name', 'category_id'])
+    categories = list(map(lambda x: category(x[0], x[1]), result.fetchall()))
+
+    await callback.message.edit_text(
+        text=RU_LEXICON['select_category_message'],
+        reply_markup=categories_keyboard(expense_or_alias='expense', categories=categories))
+
+
+@router.callback_query(F.data.startswith('add_expense_to'))
+async def input_expense_to_category(callback: CallbackQuery, state: FSMContext):
+    category_name, category_id = callback.data.split(':')[1], int(callback.data.split(':')[2])
+
+    await state.set_state(ExpensesStates.add_expense)
+    await state.update_data(category_name=category_name, category_id=category_id)
+    await callback.message.edit_text(
+        text=RU_LEXICON['input_expense_message'].format(category_name),
+        reply_markup=cancel_operation_in_expenses_sesction_keyboard
+    )
+
+
+@router.message(StateFilter(ExpensesStates.add_expense))
+async def confirm_adding_expense(message: Message, state: FSMContext):
+    parsed_message: ParsedMessage = _parse_message(message.text, inline=True)
+
+    if not parsed_message:
+        return await message.answer(
+            text=RU_LEXICON['uncorrect_input_expense_message'],
+            reply_markup=cancel_operation_in_expenses_sesction_keyboard)
+
+    await state.update_data(raw_text=message.text, amount=parsed_message.amount, comment=parsed_message.comment)
+    data = await state.get_data()
+    await state.set_state(ExpensesStates.confirm_adding_expense)
+    await message.answer(
+        text=RU_LEXICON['confirm_adding_expense_message'].format(message.text, data['category_name']),
+        reply_markup=confirm_adding_keyboard('expense')
+    )
+
+@router.callback_query(StateFilter(ExpensesStates.confirm_adding_expense), F.data == ('add_expense_confirm'))
+async def add_expense_on_database(callback: CallbackQuery, session: AsyncSession, state: FSMContext):
+    data = await state.get_data()
+    await state.clear()
+    amount_of_expense = data['amount']
+    comment_of_expense = data['comment']
+    category_id = data['category_id']
+    raw_text = data['raw_text']
+
+    session.add(
+        Expense(
+            amount=amount_of_expense,
+            created=datetime.datetime.now(),
+            category_id=category_id,
+            comment=comment_of_expense,
+            raw_text=raw_text))
+    await session.commit()
+
+    await callback.message.delete()
+    await callback.message.answer(text=RU_LEXICON['successful_expense_addition_message'])
+
+    # '''Нужно ли для UX?'''
+    # #await asyncio.sleep(1)
+
+    await callback.message.answer(text=RU_LEXICON['expenses_message'], reply_markup=expenses_keyboard())

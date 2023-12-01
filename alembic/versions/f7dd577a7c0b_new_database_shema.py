@@ -45,6 +45,7 @@ def upgrade() -> None:
     sa.Column('amount', sa.Integer(), nullable=False),
     sa.Column('created', sa.DATE(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
+    sa.Column('comment', sa.String(), nullable=False),
     sa.Column('raw_text', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['Category.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')

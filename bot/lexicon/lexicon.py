@@ -12,6 +12,13 @@ RU_LEXICON = {
     'confirm_adding_alias_message': "Подтвердить добавление обращения '{}' в категорию '{}'?",
     'successful_alias_addition_message': "Обращение успешно добавлено",
     'unsuccessful_alias_addition_message': "Обращение '{}' уже существует",
+    'input_expense_message': "Введите расход  категорию '{}' в формате '<сумма> <комментарий>'\nНапример: 2500 халяль",
+    'uncorrect_input_expense_message': "Некорректный формат введенного расхода, введите расход повторно",
+    'confirm_adding_expense_message': "Подтвердить добавление расхода '{}' в категорию '{}'?",
+    'successful_expense_addition_message': "Расход успешно добален",
+    'uncorrect_input_expense_on_alias_message': "Расход введен некорректно\nПравильный формат\
+ - <сумма> <обращение или название категории> <комментарий>\nНапример: 500 авто бенз",
+    'input_alias_does_not_exist': "Введенного обращение '{}' не существует",
 
     #buttons
     'add_category_button': "Добавить категорию",

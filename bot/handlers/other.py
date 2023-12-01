@@ -42,3 +42,5 @@ async def add_expense_on_alias(message: Message, session: AsyncSession):
                 raw_text=message.text))
         await session.commit()
         await message.answer(text=RU_LEXICON['successful_expense_addition_message'])
+
+

@@ -7,7 +7,6 @@ class ParsedMessage(NamedTuple):
     amount: int
     comment: Optional[str]
 
-
     def __str__(self):
         return  f"ParsedMessage(category_alias={self.category_alias}, amount={self.amount}, comment={self.comment})"
 

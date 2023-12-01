@@ -251,3 +251,5 @@ async def add_expense_on_database(callback: CallbackQuery, session: AsyncSession
     # #await asyncio.sleep(1)
 
     await callback.message.answer(text=RU_LEXICON['expenses_message'], reply_markup=expenses_keyboard())
+
+

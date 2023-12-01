@@ -7,7 +7,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.middleware import DbSessionMiddleware
 from bot.config.config_reader import config
-from bot.handlers import user, admin, other
+from bot.handlers import admin, other #, user
+from bot.handlers.user import user_router
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ async def main():
     dp.callback_query.middleware(CallbackAnswerMiddleware())
 
     dp.include_router(admin.router)
-    dp.include_router(user.router)
+    dp.include_router(user_router)
     dp.include_router(other.router)
 
     logger.warning('Bot started...')

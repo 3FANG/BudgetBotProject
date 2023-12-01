@@ -1,5 +1,4 @@
 import datetime
-import asyncio
 from collections import namedtuple
 
 from aiogram import Router, F

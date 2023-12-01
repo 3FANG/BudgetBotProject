@@ -12,23 +12,6 @@ class ParsedMessage(NamedTuple):
         return  f"ParsedMessage(category_alias={self.category_alias}, amount={self.amount}, comment={self.comment})"
 
 
-# def determine_the_expense_on_inline(raw_message: str) -> dict:
-#     regexp = re.match(r"([\d]+) (.*)", raw_message)
-
-#     if not regexp:
-#         return None
-
-#     amount = int(regexp.group(1))
-#     comment = regexp.group(2)
-
-#     result = {
-#         'amount': amount,
-#         'comment': comment
-#     }
-
-#     return result
-
-
 def _parse_message(raw_message: str, inline: bool=False) -> ParsedMessage:
     if inline:
         pattern = re.compile(r"([\d]+) ([^\d]+)")

@@ -38,7 +38,7 @@ async def input_category_name(callback: CallbackQuery, state: FSMContext):
 
 
 @router.message(StateFilter(ExpensesStates.confirm_adding_category))
-async def confirm_adding_category(message: Message, session: AsyncSession, state: FSMContext):
+async def confirm_adding_category(message: Message, state: FSMContext):
 
     ''' Add a validation input data '''
 

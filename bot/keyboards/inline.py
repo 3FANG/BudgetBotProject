@@ -23,6 +23,7 @@ def start_keyboard() -> InlineKeyboardMarkup:
 
     return keyboard
 
+
 def expenses_keyboard() -> InlineKeyboardMarkup:
     add_category_button: InlineKeyboardButton = InlineKeyboardButton(
         text=RU_LEXICON['add_category_button'],
@@ -54,6 +55,7 @@ def expenses_keyboard() -> InlineKeyboardMarkup:
     )
 
     return keyboard
+
 
 def statistics_keyboard() -> InlineKeyboardMarkup:
     today_statistics_button: InlineKeyboardButton = InlineKeyboardButton(
@@ -94,6 +96,7 @@ cancel_operation_in_expenses_sesction_keyboard: InlineKeyboardMarkup = InlineKey
         callback_data='cancel_operation_in_expenses_section'
     )]]
 )
+
 
 def confirm_adding_keyboard(category_or_alias_or_expense: str) -> InlineKeyboardMarkup:
     confirm_button: InlineKeyboardButton = InlineKeyboardButton(

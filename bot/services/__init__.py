@@ -1,4 +1,5 @@
 from .services import (
     ParsedMessage,
-    _parse_message
+    _parse_message,
+    get_month_statistics
     )

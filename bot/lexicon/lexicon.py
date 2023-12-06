@@ -19,6 +19,8 @@ RU_LEXICON = {
     'uncorrect_input_expense_on_alias_message': "Расход введен некорректно\nПравильный формат\
  - <сумма> <обращение или название категории> <комментарий>\nНапример: 500 авто бенз",
     'input_alias_does_not_exist': "Введенного обращение '{}' не существует",
+    'current_month_statistics_message': "Статистика\nПериод: за текущий месяц ({period})\n\n{expenses_by_categories}\n\n\
+Итог: {total_expenses_amount}",
 
     #buttons
     'add_category_button': "Добавить категорию",

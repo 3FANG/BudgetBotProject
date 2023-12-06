@@ -18,6 +18,13 @@ class ParsedMessage:
     comment: Optional[str]
 
 
+@dataclass
+class StatisticsMessage:
+    period: str
+    expenses_by_categories: str
+    total_expenses_amount: int
+
+
 def _parse_message(raw_message: str, inline: bool=False) -> ParsedMessage:
     if inline:
         pattern = re.compile(r"([\d]+) ([^\d]+)")
@@ -47,6 +54,7 @@ def _get_now_datetime() -> datetime.datetime:
     return localized
 
 
+'''Разобраться с асинхронностью. sqlalchemy.ext.asyncio.AsyncMappingResult.'''
 async def get_month_statistics(session: AsyncSession, user_id: int) -> MappingResult:
     now = _get_now_datetime()
     # first_day_of_month = date.fromisoformat(f'{now.year:04d}-{now.month:02d}-01')
@@ -63,5 +71,25 @@ ORDER BY C.id'''), {'first_day_of_month': first_day_of_month, 'user_id': user_id
     return result.mappings()
 
 
-def converting_statistics_result_into_str(result: list[Row]):
-    pass
+def converting_statistics_result_into_str(result: MappingResult) -> StatisticsMessage:
+    now = _get_now_datetime()
+    months = {
+        '01': 'январь',
+        '02': 'февраль',
+        '03': 'март',
+        '04': 'апрель',
+        '05': 'май',
+        '06': 'июнь',
+        '07': 'июль',
+        '08': 'август',
+        '09': 'сентябрь',
+        '10': 'октябрь',
+        '11': 'ноябрь',
+        '12': 'декабрь'
+    }
+    current_month = months[f'{now.month:02d}']
+    data = result.all()
+    expenses_by_categories = '\n'.join([f"{row.name}: {row.sum}" for row in data])
+    total_expenses_amount = sum(map(lambda x: x.sum, data))
+
+    return StatisticsMessage(current_month, expenses_by_categories, total_expenses_amount)
